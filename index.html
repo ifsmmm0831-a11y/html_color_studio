@@ -238,18 +238,6 @@
                             <label class="setting-label">서체</label>
                             <select id="globalFontSelect" class="font-select">
                                 <option value="">(선택하세요)</option>
-                                <option value="'Pretendard',sans-serif">Pretendard</option>
-                                <option value="'Noto Sans KR',sans-serif">Noto Sans KR</option>
-                                <option value="'Nanum Gothic',sans-serif">나눔고딕</option>
-                                <option value="'Noto Serif KR',serif">Noto Serif KR</option>
-                                <option value="'Nanum Myeongjo',serif">나눔명조</option>
-                                <option value="'Ridibatang',serif">리디바탕</option>
-                                <option value="'Gaegu',cursive">개구쟁이</option>
-                                <option value="'Nanum Pen Script',cursive">나눔펜</option>
-                                <option value="'Arial',sans-serif">Arial</option>
-                                <option value="'Georgia',serif">Georgia</option>
-                                <option value="'Times New Roman',serif">Times New Roman</option>
-                                <option value="'Courier New',monospace">Courier New</option>
                             </select>
                             <input type="text" id="globalFontCustom" class="local-font-input" placeholder="또는 폰트 이름 직접 입력">
                         </div>
@@ -271,7 +259,7 @@
                     <div id="scopeIndividual" class="scope-section">
                         <div class="font-status" id="fontStatus" role="status"><strong>👆 선택 대기 중...</strong>편집 모드에서 글자를 클릭하세요.</div>
                         <div class="setting-group"><label class="setting-label">서체</label>
-                            <select id="fontSelect" class="font-select"><option value="">(변경 없음)</option><option value="'Pretendard',sans-serif">Pretendard</option><option value="'Noto Sans KR',sans-serif">Noto Sans KR</option><option value="'Nanum Gothic',sans-serif">나눔고딕</option><option value="'Noto Serif KR',serif">Noto Serif KR</option><option value="'Nanum Myeongjo',serif">나눔명조</option><option value="'Ridibatang',serif">리디바탕</option><option value="'Gaegu',cursive">개구쟁이</option><option value="'Nanum Pen Script',cursive">나눔펜</option><option value="'Arial',sans-serif">Arial</option><option value="'Georgia',serif">Georgia</option><option value="'Times New Roman',serif">Times New Roman</option><option value="'Courier New',monospace">Courier New</option></select>
+                            <select id="fontSelect" class="font-select"><option value="">(변경 없음)</option></select>
                             <input type="text" id="localFontInput" class="local-font-input" placeholder="폰트 이름 직접 입력">
                             <label for="fontUpload" class="file-upload-label">📂 폰트 파일 업로드</label><input type="file" id="fontUpload" class="file-upload-input" accept=".ttf,.otf,.woff,.woff2">
                             <details style="margin-top:10px;border:1px solid #dce8e2;border-radius:var(--radius-md);padding:10px;background:#fff;"><summary style="font-size:12px;font-weight:bold;color:var(--c-primary-dark);cursor:pointer;">🔗 웹 폰트(URL)</summary><div style="margin-top:10px;display:flex;flex-direction:column;gap:5px;"><input type="text" id="webFontName" placeholder="폰트 이름" class="local-font-input"><input type="text" id="webFontUrl" placeholder="https://..." class="local-font-input"><button class="btn-primary" id="btnAddWebFont" style="padding:6px;font-size:12px;">추가 및 적용</button></div></details>
@@ -395,6 +383,30 @@
         const rgbRegex=/rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*(?:,\s*[\d.]+\s*)?\)/gi;
         const hslRegex=/hsla?\(\s*(\d{1,3})\s*,\s*([\d.]+)%\s*,\s*([\d.]+)%\s*(?:,\s*[\d.]+\s*)?\)/gi;
 
+        // ★ 폰트 옵션 (두 select에서 공유)
+        const FONT_OPTIONS=[
+            {value:"'Pretendard',sans-serif",label:'Pretendard'},
+            {value:"'Noto Sans KR',sans-serif",label:'Noto Sans KR'},
+            {value:"'Nanum Gothic',sans-serif",label:'나눔고딕'},
+            {value:"'Noto Serif KR',serif",label:'Noto Serif KR'},
+            {value:"'Nanum Myeongjo',serif",label:'나눔명조'},
+            {value:"'Ridibatang',serif",label:'리디바탕'},
+            {value:"'Gaegu',cursive",label:'개구쟁이'},
+            {value:"'Nanum Pen Script',cursive",label:'나눔펜'},
+            {value:"'Arial',sans-serif",label:'Arial'},
+            {value:"'Georgia',serif",label:'Georgia'},
+            {value:"'Times New Roman',serif",label:'Times New Roman'},
+            {value:"'Courier New',monospace",label:'Courier New'}
+        ];
+        function populateFontSelect(selectEl){
+            FONT_OPTIONS.forEach(opt=>{
+                const o=document.createElement('option');
+                o.value=opt.value;
+                o.textContent=opt.label;
+                selectEl.appendChild(o);
+            });
+        }
+
         // ★ CSS Named Colors → HEX 매핑 (148개)
         const CSS_COLORS={aliceblue:'#F0F8FF',antiquewhite:'#FAEBD7',aqua:'#00FFFF',aquamarine:'#7FFFD4',azure:'#F0FFFF',beige:'#F5F5DC',bisque:'#FFE4C4',black:'#000000',blanchedalmond:'#FFEBCD',blue:'#0000FF',blueviolet:'#8A2BE2',brown:'#A52A2A',burlywood:'#DEB887',cadetblue:'#5F9EA0',chartreuse:'#7FFF00',chocolate:'#D2691E',coral:'#FF7F50',cornflowerblue:'#6495ED',cornsilk:'#FFF8DC',crimson:'#DC143C',cyan:'#00FFFF',darkblue:'#00008B',darkcyan:'#008B8B',darkgoldenrod:'#B8860B',darkgray:'#A9A9A9',darkgreen:'#006400',darkgrey:'#A9A9A9',darkkhaki:'#BDB76B',darkmagenta:'#8B008B',darkolivegreen:'#556B2F',darkorange:'#FF8C00',darkorchid:'#9932CC',darkred:'#8B0000',darksalmon:'#E9967A',darkseagreen:'#8FBC8F',darkslateblue:'#483D8B',darkslategray:'#2F4F4F',darkslategrey:'#2F4F4F',darkturquoise:'#00CED1',darkviolet:'#9400D3',deeppink:'#FF1493',deepskyblue:'#00BFFF',dimgray:'#696969',dimgrey:'#696969',dodgerblue:'#1E90FF',firebrick:'#B22222',floralwhite:'#FFFAF0',forestgreen:'#228B22',fuchsia:'#FF00FF',gainsboro:'#DCDCDC',ghostwhite:'#F8F8FF',gold:'#FFD700',goldenrod:'#DAA520',gray:'#808080',green:'#008000',greenyellow:'#ADFF2F',grey:'#808080',honeydew:'#F0FFF0',hotpink:'#FF69B4',indianred:'#CD5C5C',indigo:'#4B0082',ivory:'#FFFFF0',khaki:'#F0E68C',lavender:'#E6E6FA',lavenderblush:'#FFF0F5',lawngreen:'#7CFC00',lemonchiffon:'#FFFACD',lightblue:'#ADD8E6',lightcoral:'#F08080',lightcyan:'#E0FFFF',lightgoldenrodyellow:'#FAFAD2',lightgray:'#D3D3D3',lightgreen:'#90EE90',lightgrey:'#D3D3D3',lightpink:'#FFB6C1',lightsalmon:'#FFA07A',lightseagreen:'#20B2AA',lightskyblue:'#87CEFA',lightslategray:'#778899',lightslategrey:'#778899',lightsteelblue:'#B0C4DE',lightyellow:'#FFFFE0',lime:'#00FF00',limegreen:'#32CD32',linen:'#FAF0E6',magenta:'#FF00FF',maroon:'#800000',mediumaquamarine:'#66CDAA',mediumblue:'#0000CD',mediumorchid:'#BA55D3',mediumpurple:'#9370DB',mediumseagreen:'#3CB371',mediumslateblue:'#7B68EE',mediumspringgreen:'#00FA9A',mediumturquoise:'#48D1CC',mediumvioletred:'#C71585',midnightblue:'#191970',mintcream:'#F5FFFA',mistyrose:'#FFE4E1',moccasin:'#FFE4B5',navajowhite:'#FFDEAD',navy:'#000080',oldlace:'#FDF5E6',olive:'#808000',olivedrab:'#6B8E23',orange:'#FFA500',orangered:'#FF4500',orchid:'#DA70D6',palegoldenrod:'#EEE8AA',palegreen:'#98FB98',paleturquoise:'#AFEEEE',palevioletred:'#DB7093',papayawhip:'#FFEFD5',peachpuff:'#FFDAB9',peru:'#CD853F',pink:'#FFC0CB',plum:'#DDA0DD',powderblue:'#B0E0E6',purple:'#800080',rebeccapurple:'#663399',red:'#FF0000',rosybrown:'#BC8F8F',royalblue:'#4169E1',saddlebrown:'#8B4513',salmon:'#FA8072',sandybrown:'#F4A460',seagreen:'#2E8B57',seashell:'#FFF5EE',sienna:'#A0522D',silver:'#C0C0C0',skyblue:'#87CEEB',slateblue:'#6A5ACD',slategray:'#708090',slategrey:'#708090',snow:'#FFFAFA',springgreen:'#00FF7F',steelblue:'#4682B4',tan:'#D2B48C',teal:'#008080',thistle:'#D8BFD8',tomato:'#FF6347',turquoise:'#40E0D0',violet:'#EE82EE',wheat:'#F5DEB3',white:'#FFFFFF',whitesmoke:'#F5F5F5',yellow:'#FFFF00',yellowgreen:'#9ACD32'};
 
@@ -410,7 +422,13 @@
         function convertToSixHex(h){if(!h)return'#000000';h=h.toUpperCase();return h.length===4?'#'+h[1]+h[1]+h[2]+h[2]+h[3]+h[3]:h;}
         function hslToHex(h,s,l){s/=100;l/=100;const a=s*Math.min(l,1-l);const f=n=>{const k=(n+h/30)%12;return Math.round(255*(l-a*Math.max(Math.min(k-3,9-k,1),-1))).toString(16).padStart(2,'0');};return`#${f(0)}${f(8)}${f(4)}`.toUpperCase();}
         function rgbStringToHex(r,g,b){return'#'+[r,g,b].map(v=>parseInt(v).toString(16).padStart(2,'0')).join('').toUpperCase();}
-        function isValidUrl(s){try{new URL(s);return true;}catch{return false;}}
+        function isValidUrl(s){
+            try{
+                const u=new URL(s);
+                // ★ 프로토콜 화이트리스트: http(s), data만 허용 (javascript:, file: 등 차단)
+                return u.protocol==='http:'||u.protocol==='https:'||u.protocol==='data:';
+            }catch{return false;}
+        }
         function escapeRegex(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
 
         function switchCodeTab(t){activeCodeTab=t;$$('.tab-btn[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));inputCode.style.display=t==='input'?'block':'none';outputCode.style.display=t==='output'?'block':'none';}
@@ -442,7 +460,13 @@
             if(!uniqueColors.length){paletteList.innerHTML='<p style="color:#bbb;font-size:12px;text-align:center;margin-top:30px;line-height:1.6;">색상 코드를 찾을 수 없습니다.</p>';updatePreview(normalizedCode);closeEditor();return;}
             uniqueColors.forEach(c=>{if(!colorMap[c])colorMap[c]=c;});
             const textColors=[],otherColors=[];
-            uniqueColors.forEach(color=>{if(new RegExp('(?:^|[;{\\s])color\\s*:\\s*[^;]*'+escapeRegex(color),'i').test(normalizedCode))textColors.push(color);else otherColors.push(color);});
+            // ★ color 속성만 정확히 매칭 (border-color, background-color, outline-color 제외)
+            // lookbehind로 앞에 하이픈이나 알파벳이 오는 경우 배제
+            uniqueColors.forEach(color=>{
+                const pattern=new RegExp('(?<![a-zA-Z-])color\\s*:\\s*[^;]*'+escapeRegex(color),'i');
+                if(pattern.test(normalizedCode))textColors.push(color);
+                else otherColors.push(color);
+            });
             paletteList.innerHTML='';
             if(textColors.length){addGroupTitle('🅰️ 텍스트 색상');textColors.forEach(c=>createColorRow(c));}
             if(otherColors.length){addGroupTitle('📦 배경/기타 색상');otherColors.forEach(c=>createColorRow(c));}
@@ -483,7 +507,29 @@
             searchCountEl.textContent=`${total}개 중 ${visible}개 표시됨`;
         }
 
-        function highlightMatchingElements(hex){let doc;try{doc=previewFrame.contentWindow.document;}catch{return;}const t=convertToSixHex(hex).toUpperCase();const els=doc.querySelectorAll('*');const max=Math.min(els.length,500);let first=null;for(let i=0;i<max;i++){try{const s=previewFrame.contentWindow.getComputedStyle(els[i]);if([s.color,s.backgroundColor,s.borderColor].some(c=>rgbToHex(c).toUpperCase()===t)){els[i].classList.remove('studio-flash-highlight');void els[i].offsetWidth;els[i].classList.add('studio-flash-highlight');if(!first)first=els[i];setTimeout(()=>els[i].classList.remove('studio-flash-highlight'),1500);}}catch{}}if(first)first.scrollIntoView({behavior:'smooth',block:'center'});}
+        function highlightMatchingElements(hex){
+            let doc;
+            try{doc=previewFrame.contentWindow.document;}catch{return;}
+            const t=convertToSixHex(hex).toUpperCase();
+            const els=doc.querySelectorAll('*');
+            const max=Math.min(els.length,500);
+            let first=null;
+            for(let i=0;i<max;i++){
+                try{
+                    const s=previewFrame.contentWindow.getComputedStyle(els[i]);
+                    const matches=[s.color,s.backgroundColor,s.borderColor]
+                        .some(c=>rgbToHex(c).toUpperCase()===t);
+                    if(matches){
+                        els[i].classList.remove('studio-flash-highlight');
+                        void els[i].offsetWidth; // reflow 강제 (애니메이션 재시작)
+                        els[i].classList.add('studio-flash-highlight');
+                        if(!first)first=els[i];
+                        setTimeout(()=>els[i].classList.remove('studio-flash-highlight'),1500);
+                    }
+                }catch{}
+            }
+            if(first)first.scrollIntoView({behavior:'smooth',block:'center'});
+        }
         function openEditor(color,row){activeOriginalColor=color;const cur=convertToSixHex(colorMap[color]);$$('.color-row').forEach(r=>r.classList.remove('active'));if(row)row.classList.add('active');mainColorPicker.value=cur;mainHexInput.value=cur.toUpperCase();colorPreviewCircle.style.backgroundColor=cur;editorPanel.classList.add('open');editorPanel.setAttribute('aria-hidden','false');}
         function closeEditor(){editorPanel.classList.remove('open');editorPanel.setAttribute('aria-hidden','true');$$('.color-row').forEach(r=>r.classList.remove('active'));activeOriginalColor=null;clearSelection();}
 
@@ -537,13 +583,70 @@
             if(!textEditToastShown){notify('텍스트를 직접 수정하세요. 다른 곳을 클릭하면 저장됩니다.');textEditToastShown=true;}
         }
 
-        function handleColorClick(el){let s;try{s=previewFrame.contentWindow.getComputedStyle(el);}catch{return;}const tc=rgbToHex(s.color),bc=rgbToHex(s.backgroundColor),bdc=rgbToHex(s.borderColor);selectionHint.style.display='block';selectionHint.innerHTML=`<strong>✅ &lt;${el.tagName.toLowerCase()}&gt;</strong>`;elementColorPicker.style.display='flex';editorTitle.innerText='요소 색상 편집';elTextColor.style.backgroundColor=tc;elBgColor.style.backgroundColor=bc;elBorderColor.style.backgroundColor=bdc;elTextColor.dataset.hex=tc;elBgColor.dataset.hex=bc;elBorderColor.dataset.hex=bdc;editorPanel.classList.add('open');editorPanel.setAttribute('aria-hidden','false');activeOriginalColor=null;$$('.color-row').forEach(r=>r.classList.remove('active'));selectPropertyToEdit('color');}
-        function selectPropertyToEdit(prop){currentPropertyMode=prop;let hex='#000000';$$('.element-color-item').forEach(i=>i.classList.remove('active'));if(prop==='color'){hex=elTextColor.dataset.hex||'#000000';elTextColor.parentElement.classList.add('active');}else if(prop==='background-color'){hex=elBgColor.dataset.hex||'#FFFFFF';elBgColor.parentElement.classList.add('active');}else{hex=elBorderColor.dataset.hex||'#000000';elBorderColor.parentElement.classList.add('active');}mainColorPicker.value=hex;mainHexInput.value=hex;colorPreviewCircle.style.backgroundColor=hex;}
-        function handleFontClick(el){const tag=el.tagName.toLowerCase(),txt=el.innerText.substring(0,15)+(el.innerText.length>15?'...':'');fontStatus.innerHTML=`<strong>✅ &lt;${tag}&gt;</strong> "${txt}"`;fontStatus.style.background='#e6f7ff';fontStatus.style.borderColor='#91d5ff';let cs;try{cs=previewFrame.contentWindow.getComputedStyle(el);}catch{return;}btnBold.classList.toggle('active',cs.fontWeight==='700'||cs.fontWeight==='bold');btnItalic.classList.toggle('active',cs.fontStyle==='italic');btnUnderline.classList.toggle('active',cs.textDecorationLine.includes('underline'));fontSizeInput.value=parseFloat(cs.fontSize);
+        function handleColorClick(el){
+            let s;
+            try{s=previewFrame.contentWindow.getComputedStyle(el);}catch{return;}
+            const tc=rgbToHex(s.color);
+            const bc=rgbToHex(s.backgroundColor);
+            const bdc=rgbToHex(s.borderColor);
+
+            selectionHint.style.display='block';
+            selectionHint.innerHTML=`<strong>✅ &lt;${el.tagName.toLowerCase()}&gt;</strong>`;
+            elementColorPicker.style.display='flex';
+            editorTitle.innerText='요소 색상 편집';
+
+            elTextColor.style.backgroundColor=tc;
+            elBgColor.style.backgroundColor=bc;
+            elBorderColor.style.backgroundColor=bdc;
+            elTextColor.dataset.hex=tc;
+            elBgColor.dataset.hex=bc;
+            elBorderColor.dataset.hex=bdc;
+
+            editorPanel.classList.add('open');
+            editorPanel.setAttribute('aria-hidden','false');
+            activeOriginalColor=null;
+            $$('.color-row').forEach(r=>r.classList.remove('active'));
+            selectPropertyToEdit('color');
+        }
+        function selectPropertyToEdit(prop){
+            currentPropertyMode=prop;
+            let hex='#000000';
+            $$('.element-color-item').forEach(i=>i.classList.remove('active'));
+            if(prop==='color'){
+                hex=elTextColor.dataset.hex||'#000000';
+                elTextColor.parentElement.classList.add('active');
+            }else if(prop==='background-color'){
+                hex=elBgColor.dataset.hex||'#FFFFFF';
+                elBgColor.parentElement.classList.add('active');
+            }else{
+                hex=elBorderColor.dataset.hex||'#000000';
+                elBorderColor.parentElement.classList.add('active');
+            }
+            mainColorPicker.value=hex;
+            mainHexInput.value=hex;
+            colorPreviewCircle.style.backgroundColor=hex;
+        }
+        function handleFontClick(el){
+            const tag=el.tagName.toLowerCase();
+            const txt=el.innerText.substring(0,15)+(el.innerText.length>15?'...':'');
+            fontStatus.innerHTML=`<strong>✅ &lt;${tag}&gt;</strong> "${txt}"`;
+            fontStatus.style.background='#e6f7ff';
+            fontStatus.style.borderColor='#91d5ff';
+
+            let cs;
+            try{cs=previewFrame.contentWindow.getComputedStyle(el);}catch{return;}
+            btnBold.classList.toggle('active',cs.fontWeight==='700'||cs.fontWeight==='bold');
+            btnItalic.classList.toggle('active',cs.fontStyle==='italic');
+            btnUnderline.classList.toggle('active',cs.textDecorationLine.includes('underline'));
+            fontSizeInput.value=parseFloat(cs.fontSize);
+
             // 대상 정보 표시
-            const tgt=$('#classFontTarget');if(tgt){
+            const tgt=$('#classFontTarget');
+            if(tgt){
                 const cls=Array.from(el.classList).filter(c=>!c.startsWith('studio-'));
-                const parentCls=el.parentElement?Array.from(el.parentElement.classList).filter(c=>!c.startsWith('studio-')):[];
+                const parentCls=el.parentElement
+                    ?Array.from(el.parentElement.classList).filter(c=>!c.startsWith('studio-'))
+                    :[];
                 let info=`선택: <b>&lt;${tag}&gt;</b>`;
                 if(cls.length) info+=` class="${cls.join(' ')}"`;
                 info+=`<br>`;
@@ -553,7 +656,33 @@
                 tgt.innerHTML=info;
             }
         }
-        function handleSpacingClick(el){const tag=el.tagName.toLowerCase();const cls=Array.from(el.classList).filter(c=>!c.startsWith('studio-'));const parentCls=el.parentElement?Array.from(el.parentElement.classList).filter(c=>!c.startsWith('studio-')):[];spacingStatus.innerHTML=`<strong>✅ &lt;${tag}&gt;</strong> 선택됨`;spacingStatus.style.background='#e6f7ff';spacingStatus.style.borderColor='#91d5ff';let cs;try{cs=previewFrame.contentWindow.getComputedStyle(el);}catch{return;}$$('.spacing-input').forEach(inp=>{inp.value=parseFloat(cs[inp.dataset.prop])||0;});const tgt=$('#spacingTarget');if(tgt){tgt.style.display='block';let info=`선택: <b>&lt;${tag}&gt;</b>`;if(cls.length)info+=` .${cls.join('.')}`;info+=`<br>• 클래스별: ${cls.length?'.'+cls.join('.'):'(클래스 없음)'}`;info+=`<br>• 부모+태그: ${parentCls.length?'.'+parentCls.join('.')+' > '+tag:'(부모 클래스 없음)'}`;tgt.innerHTML=info;}}
+        function handleSpacingClick(el){
+            const tag=el.tagName.toLowerCase();
+            const cls=Array.from(el.classList).filter(c=>!c.startsWith('studio-'));
+            const parentCls=el.parentElement
+                ?Array.from(el.parentElement.classList).filter(c=>!c.startsWith('studio-'))
+                :[];
+
+            spacingStatus.innerHTML=`<strong>✅ &lt;${tag}&gt;</strong> 선택됨`;
+            spacingStatus.style.background='#e6f7ff';
+            spacingStatus.style.borderColor='#91d5ff';
+
+            let cs;
+            try{cs=previewFrame.contentWindow.getComputedStyle(el);}catch{return;}
+            $$('.spacing-input').forEach(inp=>{
+                inp.value=parseFloat(cs[inp.dataset.prop])||0;
+            });
+
+            const tgt=$('#spacingTarget');
+            if(tgt){
+                tgt.style.display='block';
+                let info=`선택: <b>&lt;${tag}&gt;</b>`;
+                if(cls.length)info+=` .${cls.join('.')}`;
+                info+=`<br>• 클래스별: ${cls.length?'.'+cls.join('.'):'(클래스 없음)'}`;
+                info+=`<br>• 부모+태그: ${parentCls.length?'.'+parentCls.join('.')+' > '+tag:'(부모 클래스 없음)'}`;
+                tgt.innerHTML=info;
+            }
+        }
 
         function handleFontUpload(file){if(!selectedElement){notify('먼저 요소를 선택해주세요!');return;}if(!file)return;const r=new FileReader();r.onload=e=>{saveState();const n='CustomFont_'+Date.now();let doc;try{doc=previewFrame.contentWindow.document;}catch{return;}const s=doc.createElement('style');s.textContent=`@font-face{font-family:'${n}';src:url('${e.target.result}');}`;doc.head.appendChild(s);selectedElement.style.fontFamily=n;syncToOutputCode();fontStatus.innerHTML+=`<br><span style="color:#198754">✅ ${file.name} 적용됨</span>`;};r.readAsDataURL(file);}
         function addWebFontFromUrl(){if(!selectedElement){notify('먼저 요소를 선택해주세요!');return;}const name=$('#webFontName').value.trim(),url=$('#webFontUrl').value.trim();if(!name||!url){notify('이름과 URL을 모두 입력해주세요.');return;}if(!isValidUrl(url)){notify('올바른 URL이 아닙니다.');return;}saveState();let doc;try{doc=previewFrame.contentWindow.document;}catch{return;}const safe=name.replace(/['"<>;{}]/g,''),safeUrl=url.replace(/['"<>;{}]/g,'');const s=doc.createElement('style');s.textContent=`@font-face{font-family:'${safe}';src:url('${safeUrl}');}`;doc.head.appendChild(s);selectedElement.style.fontFamily=safe;syncToOutputCode();notify(`${safe} 적용됨!`);$('#webFontName').value='';$('#webFontUrl').value='';}
@@ -687,7 +816,53 @@
             if(activeEl&&activeEl.setAttribute)try{activeEl.focus();}catch{}
         }
 
-        function syncToOutputCode(){let doc;try{doc=previewFrame.contentWindow.document;}catch{return;}if(!doc.body)return;const sel=doc.querySelector('.studio-selected-element'),hi=doc.querySelector('.studio-flash-highlight'),te=doc.querySelectorAll('.studio-text-editing'),ls=doc.querySelectorAll('.studio-layout-selected,.studio-drag-active,.studio-drag-over');if(sel)sel.classList.remove('studio-selected-element');if(hi)hi.classList.remove('studio-flash-highlight');te.forEach(el=>{el.removeAttribute('contenteditable');el.classList.remove('studio-text-editing');});ls.forEach(el=>{el.classList.remove('studio-layout-selected','studio-drag-active','studio-drag-over');});const wasDragMode=doc.body.classList.contains('studio-drag-mode');doc.body.classList.remove('studio-drag-mode');const mode=doc.body.dataset.studioMode;delete doc.body.dataset.studioMode;const removed=[];doc.querySelectorAll('style').forEach(s=>{if(s.textContent.includes('studio-selected-element')||s.textContent.includes('studio-flash-highlight')||s.textContent.includes('studio-text-editing')||s.textContent.includes('studio-drag')||s.textContent.includes('studio-layout')){removed.push({el:s,parent:s.parentNode});s.remove();}});const removedLinks=[];doc.querySelectorAll('link[data-injected="true"]').forEach(l=>{removedLinks.push({el:l,parent:l.parentNode});l.remove();});outputCode.value=doc.documentElement.outerHTML;removed.forEach(({el,parent})=>parent.appendChild(el));removedLinks.forEach(({el,parent})=>parent.appendChild(el));if(sel)sel.classList.add('studio-selected-element');if(mode)doc.body.dataset.studioMode=mode;if(wasDragMode)doc.body.classList.add('studio-drag-mode');te.forEach(el=>{el.setAttribute('contenteditable','true');el.classList.add('studio-text-editing');});ls.forEach(el=>{el.classList.add('studio-layout-selected');});}
+        function syncToOutputCode(){
+            let doc;try{doc=previewFrame.contentWindow.document;}catch{return;}
+            if(!doc.body)return;
+
+            // 1) 스튜디오 전용 클래스/속성을 임시 제거 (출력 코드에 포함되지 않도록)
+            const sel=doc.querySelector('.studio-selected-element');
+            const hi=doc.querySelector('.studio-flash-highlight');
+            const te=doc.querySelectorAll('.studio-text-editing');
+            const ls=doc.querySelectorAll('.studio-layout-selected,.studio-drag-active,.studio-drag-over');
+            if(sel)sel.classList.remove('studio-selected-element');
+            if(hi)hi.classList.remove('studio-flash-highlight');
+            te.forEach(el=>{el.removeAttribute('contenteditable');el.classList.remove('studio-text-editing');});
+            ls.forEach(el=>{el.classList.remove('studio-layout-selected','studio-drag-active','studio-drag-over');});
+
+            const wasDragMode=doc.body.classList.contains('studio-drag-mode');
+            doc.body.classList.remove('studio-drag-mode');
+            const mode=doc.body.dataset.studioMode;
+            delete doc.body.dataset.studioMode;
+
+            // 2) 주입된 style/link 태그 임시 제거
+            const removed=[];
+            doc.querySelectorAll('style').forEach(s=>{
+                const t=s.textContent;
+                if(t.includes('studio-selected-element')||t.includes('studio-flash-highlight')
+                    ||t.includes('studio-text-editing')||t.includes('studio-drag')||t.includes('studio-layout')){
+                    removed.push({el:s,parent:s.parentNode});
+                    s.remove();
+                }
+            });
+            const removedLinks=[];
+            doc.querySelectorAll('link[data-injected="true"]').forEach(l=>{
+                removedLinks.push({el:l,parent:l.parentNode});
+                l.remove();
+            });
+
+            // 3) 결과 코드 추출
+            outputCode.value=doc.documentElement.outerHTML;
+
+            // 4) 임시 제거한 모든 요소/속성 복원
+            removed.forEach(({el,parent})=>parent.appendChild(el));
+            removedLinks.forEach(({el,parent})=>parent.appendChild(el));
+            if(sel)sel.classList.add('studio-selected-element');
+            if(mode)doc.body.dataset.studioMode=mode;
+            if(wasDragMode)doc.body.classList.add('studio-drag-mode');
+            te.forEach(el=>{el.setAttribute('contenteditable','true');el.classList.add('studio-text-editing');});
+            ls.forEach(el=>{el.classList.add('studio-layout-selected');});
+        }
 
         function saveState(){historyStack.push({colorMap:JSON.parse(JSON.stringify(colorMap)),code:outputCode.value});if(historyStack.length>50)historyStack.shift();futureStack=[];updateUndoRedoUI();}
         function undo(){if(!historyStack.length)return;futureStack.push({colorMap:JSON.parse(JSON.stringify(colorMap)),code:outputCode.value});const p=historyStack.pop();colorMap=p.colorMap;outputCode.value=p.code;updatePreview(p.code);updateUndoRedoUI();}
@@ -721,8 +896,18 @@
         $('#btnDeletePalette').addEventListener('click',deletePalette);
         $('#btnSavePalette').addEventListener('click',savePalette);
         fontSelect.addEventListener('change',applyFontToSelection);
-        localFontInput.addEventListener('input',applyFontToSelection);
-        fontSizeInput.addEventListener('input',changeFontSize);
+        // ★ 폰트 이름 직접 입력은 디바운스 적용 (타이핑 중 매 글자 적용 방지)
+        let localFontDebounce=null;
+        localFontInput.addEventListener('input',()=>{
+            clearTimeout(localFontDebounce);
+            localFontDebounce=setTimeout(applyFontToSelection,400);
+        });
+        // 폰트 크기도 동일하게 디바운스 처리
+        let fontSizeDebounce=null;
+        fontSizeInput.addEventListener('input',()=>{
+            clearTimeout(fontSizeDebounce);
+            fontSizeDebounce=setTimeout(changeFontSize,250);
+        });
         $('#fontUpload').addEventListener('change',function(){handleFontUpload(this.files[0]);});
         $('#btnAddWebFont').addEventListener('click',addWebFontFromUrl);
         btnBold.addEventListener('click',()=>toggleStyle('bold'));
@@ -776,11 +961,16 @@
         // style 태그에서 클래스 이름 추출
         function extractDefinedClasses(code){
             const classes=new Set();
-            const styleMatch=code.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
-            if(!styleMatch)return[];
-            const css=styleMatch[1];
-            const classRegex=/\.([a-zA-Z_][\w-]*)\s*[{,:\s]/g;
-            let m;while((m=classRegex.exec(css))!==null) classes.add(m[1]);
+            // ★ 모든 <style> 블록을 처리 (이전엔 첫 번째만 매칭)
+            const styleMatches=code.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/gi);
+            // ★ 클래스 직후에 오는 다양한 문자 허용 (`{`, `,`, ` `, `:`, `.`, `>`, `+`, `~`, `[`)
+            //    이전 정규식은 `.foo .bar { }` 같은 후손 셀렉터에서 누락 가능성 있었음
+            const classRegex=/\.([a-zA-Z_][\w-]*)(?=[\s.,:{>+~[])/g;
+            for(const styleMatch of styleMatches){
+                const css=styleMatch[1];
+                let m;
+                while((m=classRegex.exec(css))!==null) classes.add(m[1]);
+            }
             return[...classes].sort();
         }
 
@@ -855,7 +1045,22 @@
         }
 
         // ★ 2,3) 요소 트리: 전체 깊이 탐색 + 접기/펼치기
-        const collapsedSet=new Set(); // 접힌 요소 추적 (경로 기반)
+        const collapsedSet=new Set(); // 접힌 요소 추적 (안정적 키 기반)
+
+        // ★ 안정적 키: 태그 + 클래스 + 직속 텍스트 일부 + 부모키
+        // 인덱스 경로보다 요소 추가/삭제에 덜 민감함
+        function getStableKey(el,parentKey){
+            const tag=el.tagName.toLowerCase();
+            const cls=el.className&&typeof el.className==='string'
+                ?el.className.split(/\s+/).filter(c=>c&&!c.startsWith('studio-')).sort().join('.')
+                :'';
+            const directText=Array.from(el.childNodes)
+                .filter(n=>n.nodeType===3)
+                .map(n=>n.textContent.trim())
+                .join(' ').substring(0,15);
+            const id=el.id||'';
+            return `${parentKey}>${tag}${id?'#'+id:''}${cls?'.'+cls:''}${directText?'~'+directText:''}`;
+        }
 
         function getElPath(el,doc){
             const parts=[];let cur=el;
@@ -886,10 +1091,12 @@
             let count=0;
             const SKIP=['STYLE','LINK','SCRIPT','META'];
 
-            function walk(parent,depth,parentPath){
+            function walk(parent,depth,parentKey){
                 const children=Array.from(parent.children).filter(c=>!SKIP.includes(c.tagName)&&!(c.dataset&&c.dataset.injected));
                 children.forEach((el,idx)=>{
-                    const path=parentPath?parentPath+'-'+idx:''+idx;
+                    // ★ 안정적 키 사용 (요소 추가/삭제 시 접힘 상태 유지)
+                    const key=getStableKey(el,parentKey)+'#'+idx;
+                    const path=key; // 호환성 유지를 위해 이름은 path로 사용
                     const hasChildren=Array.from(el.children).filter(c=>!SKIP.includes(c.tagName)).length>0;
                     const isCollapsed=collapsedSet.has(path);
                     count++;
@@ -1020,6 +1227,9 @@
         }).observe($('#tabContentLayout'),{attributes:true,attributeFilter:['class']});
 
         updatePaletteDropdown();
+        // ★ 폰트 옵션 동적 생성 (두 select 공유)
+        populateFontSelect(globalFontSelect);
+        populateFontSelect(fontSelect);
     })();
     </script>
 </body>
